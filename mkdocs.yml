@@ -1,6 +1,6 @@
-site_name: TODO: your repository name
+site_name: pygcsutils
 
-repo_url: TODO: your repository url
+repo_url: https://github.com/nodd-tools/py-gcs-utils
 
 theme:
   name: material
@@ -26,4 +26,4 @@ nav:
   - Contributing: CONTRIBUTING.md
   - Code of Conduct: CODE_OF_CONDUCT.md
   - Code Reference:
-      - Some Module: api/some_module.md
+      - Connect: api/connect.md
