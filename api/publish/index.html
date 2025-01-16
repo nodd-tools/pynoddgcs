@@ -1313,14 +1313,9 @@ the location of the COCO file.</p>
 
         <p>Get a url path for uploading/downloading GCS NODD data based on
 the bucket, organization, etc.</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>dataset_path('foo', 'bar', 'pickles+fish', 'project')
-'foo/bar/pickles%2Bfish/project'</p>
-</blockquote>
-</blockquote>
-</blockquote>
+<pre><code>&gt;&gt;&gt; dataset_path('foo', 'bar', 'pickles+fish', 'project')
+'foo/bar/pickles%2Bfish/project'
+</code></pre>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1419,13 +1414,17 @@ the bucket, organization, etc.</p>
 <span class="normal">123</span>
 <span class="normal">124</span>
 <span class="normal">125</span>
-<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dataset_path</span><span class="p">(</span><span class="n">bucket</span><span class="p">,</span> <span class="n">datasets_root</span><span class="p">,</span> <span class="n">organization</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dataset_path</span><span class="p">(</span><span class="n">bucket</span><span class="p">,</span> <span class="n">datasets_root</span><span class="p">,</span> <span class="n">organization</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a url path for uploading/downloading GCS NODD data based on</span>
 <span class="sd">    the bucket, organization, etc.</span>
 
+<span class="sd">    ```</span>
 <span class="sd">    &gt;&gt;&gt; dataset_path(&#39;foo&#39;, &#39;bar&#39;, &#39;pickles+fish&#39;, &#39;project&#39;)</span>
 <span class="sd">    &#39;foo/bar/pickles%2Bfish/project&#39;</span>
+<span class="sd">    ```</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1460,14 +1459,9 @@ the bucket, organization, etc.</p>
         <p>Joins a bunch of strings into a slash-delimited url path</p>
 <p>Does the same thing as <code>urllib.parse.urljoin</code>, but accepts
 more than two arguments.</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>join_urlpath('foo', 'bar', 'pickles+fish', 'project')
-'foo/bar/pickles%2Bfish/project'</p>
-</blockquote>
-</blockquote>
-</blockquote>
+<pre><code>&gt;&gt;&gt; join_urlpath('foo', 'bar', 'pickles+fish', 'project')
+'foo/bar/pickles%2Bfish/project'
+</code></pre>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1524,9 +1518,7 @@ more than two arguments.</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
@@ -1547,15 +1539,21 @@ more than two arguments.</p>
 <span class="normal">148</span>
 <span class="normal">149</span>
 <span class="normal">150</span>
-<span class="normal">151</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join_urlpath</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">):</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join_urlpath</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Joins a bunch of strings into a slash-delimited url path</span>
 
 <span class="sd">    Does the same thing as `urllib.parse.urljoin`, but accepts</span>
 <span class="sd">    more than two arguments.</span>
 
+<span class="sd">    ``` </span>
 <span class="sd">    &gt;&gt;&gt; join_urlpath(&#39;foo&#39;, &#39;bar&#39;, &#39;pickles+fish&#39;, &#39;project&#39;)</span>
 <span class="sd">    &#39;foo/bar/pickles%2Bfish/project&#39;</span>
+<span class="sd">    ```</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1656,11 +1654,7 @@ directory structure into all parts, instead of just two (head/tail)</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
 <span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
@@ -1681,7 +1675,11 @@ directory structure into all parts, instead of just two (head/tail)</p>
 <span class="normal">175</span>
 <span class="normal">176</span>
 <span class="normal">177</span>
-<span class="normal">178</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">split_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">split_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Splits a filename into all of its component directory structure</span>
 
