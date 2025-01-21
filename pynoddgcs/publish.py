@@ -165,8 +165,12 @@ def split_filename(filename):
     Does the same thing as `os.path.split`, but completely splits the 
     directory structure into all parts, instead of just two (head/tail)
 
+    ```
+    
     >>> split_filename('foo/bar/pickles')
     ['foo', 'bar', 'pickles']
+
+    ```
 
     Parameters
     ----------
