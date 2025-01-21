@@ -1,3 +1,3 @@
 # Connect
 
-::: pygcsutils.connect
+::: pynoddgcs.connect

@@ -1,5 +1,7 @@
 import unittest
+import pynoddgcs.publish
 import utils
+import pynoddgcs
 
 class TestSomething(unittest.TestCase):
 
@@ -7,7 +9,13 @@ class TestSomething(unittest.TestCase):
         self.assertEqual(1,1)
 
 def load_tests(loader, tests, ignore):
-    return utils.doctests(pycocowriter.utils, tests)
+    modules = [
+        pynoddgcs.publish,
+        pynoddgcs.connect
+    ]
+    for module in modules:
+        tests = utils.doctests(module, tests)
+    return tests
 
 if __name__ == '__main__':
     unittest.main()

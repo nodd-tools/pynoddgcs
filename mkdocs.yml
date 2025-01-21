@@ -1,6 +1,6 @@
-site_name: pygcsutils
+site_name: pynoddgcs
 
-repo_url: https://github.com/nodd-tools/py-gcs-utils
+repo_url: https://github.com/nodd-tools/pynoddgcs
 
 theme:
   name: material
@@ -27,3 +27,4 @@ nav:
   - Code of Conduct: CODE_OF_CONDUCT.md
   - Code Reference:
       - Connect: api/connect.md
+      - Publish: api/publish.md

@@ -1,4 +1,4 @@
-# py-gcs-utils
+# pynoddgcs
 
 Utilities for working with [NOAA NODD](https://www.noaa.gov/information-technology/open-data-dissemination) GCS in python.
   These utilities are intended as [opinionated](https://en.wikipedia.org/wiki/Convention_over_configuration) tools for interacting with GCS for the purpose of [findable, accessible, interoperable and reusable](https://en.wikipedia.org/wiki/FAIR_data) open [science](https://en.wikipedia.org/wiki/Open_science).
@@ -6,7 +6,7 @@ Utilities for working with [NOAA NODD](https://www.noaa.gov/information-technolo
 
 # Installation
 
-Put installation instructions here
+`pip install pynoddgcs`
 
 # Contributing
 
