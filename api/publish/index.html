@@ -907,7 +907,10 @@ consider computing with <code>dataset_path</code> function.</p>
 <span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">NODDCOCODataset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">NODDCOCODataset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for validating and uploading annotations in COCO format.</span>
 
@@ -920,13 +923,12 @@ consider computing with <code>dataset_path</code> function.</p>
 <span class="sd">        consider computing with `dataset_path` function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coco_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span> 
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coco_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bucket</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">coco_file</span> <span class="o">=</span> <span class="n">coco_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coco</span> <span class="o">=</span> <span class="n">pycocotools</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">COCO</span><span class="p">(</span><span class="n">coco_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coco_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coco_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_upload_path</span> <span class="o">=</span> <span class="n">dataset_root</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_download_url</span> <span class="o">=</span> <span class="n">join_urlpath</span><span class="p">(</span>
-            <span class="n">GCS_ROOT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_upload_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bucket</span> <span class="o">=</span> <span class="n">bucket</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relative_gcs_path</span> <span class="o">=</span> <span class="n">dataset_root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gcs</span> <span class="o">=</span> <span class="n">GCS</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -939,7 +941,11 @@ consider computing with <code>dataset_path</code> function.</p>
             <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitdrive</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">splitfile</span> <span class="o">=</span> <span class="n">split_filename</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
             <span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join_urlpath</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">root_download_url</span><span class="p">,</span> <span class="o">*</span><span class="n">splitfile</span><span class="p">)</span>
+                <span class="n">GCS_ROOT</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">relative_gcs_path</span><span class="p">,</span> 
+                <span class="o">*</span><span class="n">splitfile</span>
+            <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">unnest_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_separator</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -974,7 +980,7 @@ consider computing with <code>dataset_path</code> function.</p>
             <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitdrive</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">splitfile</span> <span class="o">=</span> <span class="n">split_filename</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
             <span class="n">destination</span> <span class="o">=</span> <span class="n">join_urlpath</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">root_upload_path</span><span class="p">,</span> <span class="o">*</span><span class="n">splitfile</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">relative_gcs_path</span><span class="p">,</span> <span class="o">*</span><span class="n">splitfile</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]):</span>
                 <span class="n">source</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]</span>
@@ -991,7 +997,7 @@ consider computing with <code>dataset_path</code> function.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">unnest_filenames</span><span class="p">()</span>
         <span class="n">newcoco</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
         <span class="n">destination</span> <span class="o">=</span> <span class="n">join_urlpath</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">root_upload_path</span><span class="p">,</span> <span class="s1">&#39;annotations.json&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relative_gcs_path</span><span class="p">,</span> <span class="s1">&#39;annotations.json&#39;</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gcs</span><span class="o">.</span><span class="n">upload_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">newcoco</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
 
@@ -1032,7 +1038,8 @@ expected location of the files within GCS</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">32</span>
+<span class="normal">33</span>
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
@@ -1042,7 +1049,10 @@ expected location of the files within GCS</p>
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute and update the urls within this COCO file to reflect the</span>
 <span class="sd">    expected location of the files within GCS</span>
@@ -1052,7 +1062,11 @@ expected location of the files within GCS</p>
         <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitdrive</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">splitfile</span> <span class="o">=</span> <span class="n">split_filename</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
         <span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join_urlpath</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">root_download_url</span><span class="p">,</span> <span class="o">*</span><span class="n">splitfile</span><span class="p">)</span>
+            <span class="n">GCS_ROOT</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relative_gcs_path</span><span class="p">,</span> 
+            <span class="o">*</span><span class="n">splitfile</span>
+        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1108,10 +1122,7 @@ This method is idempotent if the file_name attribute is unnested.</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
@@ -1127,7 +1138,10 @@ This method is idempotent if the file_name attribute is unnested.</p>
 <span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
-<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">unnest_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_separator</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="p">):</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">unnest_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_separator</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    pycocotools doesn&#39;t appreciated &quot;nested&quot; `file_name attributes.</span>
 <span class="sd">    To this end, we replace the `file_name` attribute to be &quot;unnested&quot;,</span>
@@ -1168,12 +1182,12 @@ This method is idempotent if the file_name attribute is unnested.</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">102</span>
 <span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Upload this dataset, first the images, then the adjusted COCO file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1201,18 +1215,18 @@ in the GCS bucket.</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload_coco</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload_coco</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Upload the COCO file, but adjusted so that file urls point to files</span>
 <span class="sd">    in the GCS bucket.</span>
@@ -1221,7 +1235,7 @@ in the GCS bucket.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">unnest_filenames</span><span class="p">()</span>
     <span class="n">newcoco</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
     <span class="n">destination</span> <span class="o">=</span> <span class="n">join_urlpath</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_upload_path</span><span class="p">,</span> <span class="s1">&#39;annotations.json&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relative_gcs_path</span><span class="p">,</span> <span class="s1">&#39;annotations.json&#39;</span>
     <span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">gcs</span><span class="o">.</span><span class="n">upload_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">newcoco</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -1248,10 +1262,7 @@ the location of the COCO file.</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">69</span>
 <span class="normal">70</span>
 <span class="normal">71</span>
 <span class="normal">72</span>
@@ -1266,7 +1277,10 @@ the location of the COCO file.</p>
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Upload the images in this COCO metadata file to GCS.</span>
 <span class="sd">    The files should be located at the location specified with </span>
@@ -1278,7 +1292,7 @@ the location of the COCO file.</p>
         <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitdrive</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">splitfile</span> <span class="o">=</span> <span class="n">split_filename</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
         <span class="n">destination</span> <span class="o">=</span> <span class="n">join_urlpath</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">root_upload_path</span><span class="p">,</span> <span class="o">*</span><span class="n">splitfile</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relative_gcs_path</span><span class="p">,</span> <span class="o">*</span><span class="n">splitfile</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]):</span>
             <span class="n">source</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]</span>
@@ -1304,7 +1318,7 @@ the location of the COCO file.</p>
 
 
 <h2 id="pynoddgcs.publish.dataset_path" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">dataset_path</span><span class="p">(</span><span class="n">bucket</span><span class="p">,</span> <span class="n">datasets_root</span><span class="p">,</span> <span class="n">organization</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">dataset_path</span><span class="p">(</span><span class="n">datasets_root</span><span class="p">,</span> <span class="n">organization</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1313,8 +1327,9 @@ the location of the COCO file.</p>
 
         <p>Get a url path for uploading/downloading GCS NODD data based on
 the bucket, organization, etc.</p>
-<pre><code>&gt;&gt;&gt; dataset_path('foo', 'bar', 'pickles+fish', 'project')
-'foo/bar/pickles%2Bfish/project'
+<pre><code>&gt;&gt;&gt; dataset_path('bar', 'pickles+fish', 'project')
+'bar/pickles%2Bfish/project'
+
 </code></pre>
 
 
@@ -1329,21 +1344,6 @@ the bucket, organization, etc.</p>
         </tr>
       </thead>
       <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>bucket</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>the name of the bucket</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
           <tr class="doc-section-item">
             <td>
                 <code>datasets_root</code>
@@ -1394,10 +1394,7 @@ the bucket, organization, etc.</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
 <span class="normal">112</span>
@@ -1416,20 +1413,21 @@ the bucket, organization, etc.</p>
 <span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
-<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dataset_path</span><span class="p">(</span><span class="n">bucket</span><span class="p">,</span> <span class="n">datasets_root</span><span class="p">,</span> <span class="n">organization</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dataset_path</span><span class="p">(</span><span class="n">datasets_root</span><span class="p">,</span> <span class="n">organization</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a url path for uploading/downloading GCS NODD data based on</span>
 <span class="sd">    the bucket, organization, etc.</span>
 
 <span class="sd">    ```</span>
-<span class="sd">    &gt;&gt;&gt; dataset_path(&#39;foo&#39;, &#39;bar&#39;, &#39;pickles+fish&#39;, &#39;project&#39;)</span>
-<span class="sd">    &#39;foo/bar/pickles%2Bfish/project&#39;</span>
+<span class="sd">    &gt;&gt;&gt; dataset_path(&#39;bar&#39;, &#39;pickles+fish&#39;, &#39;project&#39;)</span>
+<span class="sd">    &#39;bar/pickles%2Bfish/project&#39;</span>
+
 <span class="sd">    ```</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    bucket: str</span>
-<span class="sd">        the name of the bucket</span>
 <span class="sd">    datasets_root: str</span>
 <span class="sd">        the root directory within the bucket where we are hosting datasets</span>
 <span class="sd">    organization: str</span>
@@ -1438,7 +1436,7 @@ the bucket, organization, etc.</p>
 <span class="sd">        the second-level fixed-depth directory for organizing datasets</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">join_urlpath</span><span class="p">(</span>
-        <span class="n">bucket</span><span class="p">,</span> <span class="n">datasets_root</span><span class="p">,</span> <span class="n">organization</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
+        <span class="n">datasets_root</span><span class="p">,</span> <span class="n">organization</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1456,11 +1454,16 @@ the bucket, organization, etc.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Joins a bunch of strings into a slash-delimited url path</p>
-<p>Does the same thing as <code>urllib.parse.urljoin</code>, but accepts
-more than two arguments.</p>
+        <p>Joins a bunch of strings into a slash-delimited url path.</p>
 <pre><code>&gt;&gt;&gt; join_urlpath('foo', 'bar', 'pickles+fish', 'project')
 'foo/bar/pickles%2Bfish/project'
+
+&gt;&gt;&gt; join_urlpath('http://foo', 'bar', 'pickles+fish', 'project')
+'http://foo/bar/pickles%2Bfish/project'
+
+&gt;&gt;&gt; join_urlpath('http://foo/bar', 'pickles+fish/project')
+'http://foo/bar/pickles%2Bfish/project'
+
 </code></pre>
 
 
@@ -1518,9 +1521,7 @@ more than two arguments.</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
@@ -1543,16 +1544,24 @@ more than two arguments.</p>
 <span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span>
-<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join_urlpath</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">):</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join_urlpath</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Joins a bunch of strings into a slash-delimited url path</span>
-
-<span class="sd">    Does the same thing as `urllib.parse.urljoin`, but accepts</span>
-<span class="sd">    more than two arguments.</span>
+<span class="sd">    Joins a bunch of strings into a slash-delimited url path.</span>
 
 <span class="sd">    ``` </span>
 <span class="sd">    &gt;&gt;&gt; join_urlpath(&#39;foo&#39;, &#39;bar&#39;, &#39;pickles+fish&#39;, &#39;project&#39;)</span>
 <span class="sd">    &#39;foo/bar/pickles%2Bfish/project&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; join_urlpath(&#39;http://foo&#39;, &#39;bar&#39;, &#39;pickles+fish&#39;, &#39;project&#39;)</span>
+<span class="sd">    &#39;http://foo/bar/pickles%2Bfish/project&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; join_urlpath(&#39;http://foo/bar&#39;, &#39;pickles+fish/project&#39;)</span>
+<span class="sd">    &#39;http://foo/bar/pickles%2Bfish/project&#39;</span>
+
 <span class="sd">    ```</span>
 
 <span class="sd">    Parameters</span>
@@ -1565,10 +1574,8 @@ more than two arguments.</p>
 <span class="sd">    url: str</span>
 <span class="sd">        the joined url</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">url</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;:/&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1654,11 +1661,7 @@ directory structure into all parts, instead of just two (head/tail)</p>
 
             <details class="quote">
               <summary>Source code in <code>pynoddgcs/publish.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">161</span>
 <span class="normal">162</span>
 <span class="normal">163</span>
 <span class="normal">164</span>
@@ -1679,7 +1682,11 @@ directory structure into all parts, instead of just two (head/tail)</p>
 <span class="normal">179</span>
 <span class="normal">180</span>
 <span class="normal">181</span>
-<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">split_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">split_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Splits a filename into all of its component directory structure</span>
 
