@@ -6,3 +6,4 @@ viame2coco
 jupyter
 pycocowriter
 mlflow
+flit
