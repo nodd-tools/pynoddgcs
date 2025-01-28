@@ -1,5 +1,7 @@
-data/
 __pycache__/
 .venv/
 .ipynb_checkpoints/
 site/
+dist/
+data/
+/runs

@@ -2,3 +2,7 @@
 mkdocs
 mkdocs-material
 mkdocstrings[python]
+viame2coco
+jupyter
+pycocowriter
+mlflow

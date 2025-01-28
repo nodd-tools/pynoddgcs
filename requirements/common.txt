@@ -1,4 +1,4 @@
-mlcroissant
 google-cloud-storage
 google-auth
 requests
+pycocotools

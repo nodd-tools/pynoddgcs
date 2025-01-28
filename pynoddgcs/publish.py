@@ -34,7 +34,7 @@ class NODDCOCODataset(object):
         Compute and update the urls within this COCO file to reflect the
         expected location of the files within GCS
         """
-        for image in self.coco.imgs:
+        for i, image in self.coco.imgs.items():
             # discard the drive letter, if present
             file_name = os.path.splitdrive(image['file_name'])[1]
             splitfile = split_filename(file_name)
@@ -60,7 +60,7 @@ class NODDCOCODataset(object):
             the string we use to replace '/' in the `file_name`
         """
         # COCO file_names should not be nested
-        for image in self.coco.imgs:
+        for i, image in self.coco.imgs.items():
             # discard the drive letter, if present
             file_name = os.path.splitdrive(image['file_name'])[1]
             splitfile = split_filename(file_name)
@@ -73,7 +73,8 @@ class NODDCOCODataset(object):
         the `file_name` attribute, either absolute or relative to 
         the location of the COCO file.
         """
-        for image in self.coco.imgs:
+        for i, image in self.coco.imgs.items():
+            print(image['file_name'])
             # discard the drive letter, if present
             file_name = os.path.splitdrive(image['file_name'])[1]
             splitfile = split_filename(file_name)
@@ -103,7 +104,9 @@ class NODDCOCODataset(object):
         """
         Upload this dataset, first the images, then the adjusted COCO file.
         """
+        print("uploading images")
         self.upload_images()
+        print("uploading coco file")
         self.upload_coco()
 
 def dataset_path(datasets_root, organization, project):
@@ -184,7 +187,9 @@ def split_filename(filename):
         (and possibly the terminating filename)
     """
     paths = []
-    while filename:
+    tail = "totally_arbitrary"
+    while filename and tail:
         filename, tail = os.path.split(filename)
-        paths.append(tail)
+        if tail and tail != '.' and tail != '..':
+            paths.append(tail)
     return paths[::-1]

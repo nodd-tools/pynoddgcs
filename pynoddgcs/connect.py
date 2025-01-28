@@ -16,6 +16,7 @@ class GCS(object):
     """
     def __init__(self):
         self.client = storage.Client.create_anonymous_client()
+        self.authenticated = False
 
     def download(self, bucket, source, destination = None):
         """
@@ -106,6 +107,7 @@ class GCS(object):
         # Upload the file
         bucket = self.client.bucket(bucket)
         blob = bucket.blob(destination)
+        print(contents)
         blob.upload_from_string(contents)
 
         print(f"Contents uploaded to {destination}.")

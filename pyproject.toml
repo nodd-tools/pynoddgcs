@@ -7,9 +7,12 @@ name = "pynoddgcs"
 version = "0.1.0"
 description = "Utilities for connecting to a gcs bucket and uploading files"
 authors = [
-    { name = "scott brown" },
+    { name = "CScott Brown" },
 ]
 dependencies = [
+  "google-cloud-storage",
+  "google-auth",
+  "requests"
 ]
 readme = "README.md"
 classifiers = [
