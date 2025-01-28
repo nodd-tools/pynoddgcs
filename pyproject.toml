@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "pynoddgcs"
-version = "0.1.0"
+version = "0.1.1"
 description = "Utilities for connecting to a gcs bucket and uploading files"
 authors = [
     { name = "CScott Brown" },
@@ -18,3 +18,7 @@ readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
 ]
+
+[project.urls]
+Documentation = "https://nodd-tools.github.io/pynoddgcs/"
+Source = "https://github.com/nodd-tools/pynoddgcs"
